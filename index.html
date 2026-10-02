@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم ميكس جريل | Mix Grill - طلب أونلاين</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#f97316',
+                            darkOrange: '#ea580c',
+                            fire: '#dc2626',
+                            dark: '#181110',
+                            card: '#221917',
+                            gold: '#fbbf24',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #120d0c;
+            color: #f3f4f6;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #181110;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ea580c;
+            border-radius: 4px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-card {
+            background: rgba(34, 25, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(249, 115, 22, 0.15);
+        }
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(234, 88, 12, 0.25);
+        }
+        .animate-bounce-short {
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="bg-[#120d0c] text-gray-100 min-h-screen pb-24 border-box">
+
+    <header class="relative bg-gradient-to-b from-[#2a1712] via-[#1f120e] to-[#120d0c] border-b border-orange-900/40 sticky top-0 z-30 shadow-2xl">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-600 to-red-700 p-1 shadow-lg shadow-orange-900/50 flex-shrink-0">
+                    <div class="w-full h-full bg-[#181110] rounded-xl flex items-center justify-center text-center p-1">
+                        <div>
+                            <i class="fa-solid font-black text-2xl text-amber-400 fa-fire-flame-curved"></i>
+                            <span class="block text-[10px] font-black tracking-tighter text-amber-500 uppercase leading-none">MIX GRILL</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-red-500">
+                        ميكس جريل <span class="text-xs font-bold text-amber-500 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-800/50">Mix Grill</span>
+                    </h1>
+                    <p class="text-xs text-orange-200/80 mt-1 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                        <span>ميت أبو غالب / بجوار المستشفى - خلف صيدلية د. مريم</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                <a href="tel:01154508136" class="flex-1 md:flex-initial flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>01154508136</span>
+                </a>
+                <button onclick="toggleCartModal(true)" class="relative flex items-center justify-center gap-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-md shadow-orange-900/30">
+                    <i class="fa-solid fa-basket-shopping text-sm"></i>
+                    <span>السلة</span>
+                    <span id="header-cart-count" class="bg-amber-400 text-black text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="max-w-6xl mx-auto px-4 pb-3">
+            <div class="relative">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحث عن وجبة، بيتزا، كريب، مشويات..." class="w-full bg-[#1c1412] text-sm text-gray-200 placeholder-gray-500 px-10 py-2.5 rounded-xl border border-orange-900/30 focus:outline-none focus:border-orange-500 transition">
+                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-gray-400 text-sm"></i>
+                <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute left-3 top-2.5 text-gray-400 hover:text-white text-xs bg-gray-800 rounded-full w-5 h-5 items-center justify-center">✕</button>
+            </div>
+        </div>
+
+        <!-- Categories Scroll Bar -->
+        <div class="border-t border-orange-900/20 bg-[#150e0d]">
+            <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto hide-scrollbar" id="categories-container">
+                <!-- Dynamically populated categories -->
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        
+        <!-- Welcome Banner -->
+        <div class="glass-card rounded-2xl p-4 md:p-6 mb-8 border border-orange-500/20 relative overflow-hidden bg-gradient-to-r from-[#2a1712] to-[#1a110f]">
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <span class="inline-block bg-orange-500/20 text-orange-400 text-xs font-bold px-3 py-1 rounded-full border border-orange-500/30 mb-2">🔥 أصل الطعم السوري والمشويات</span>
+                    <h2 class="text-xl md:text-2xl font-black text-amber-400">اطلب وجبتك المفضل أونلاين الآن!</h2>
+                    <p class="text-xs text-gray-300 mt-1">اختر أصنافك المفضلة وسنقوم بتجهيز طلبك وإرساله مباشرة عبر الواتساب إلى المطعم.</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-orange-300 bg-orange-950/40 p-3 rounded-xl border border-orange-800/30">
+                    <i class="fa-solid fa-clock text-amber-400 text-base"></i>
+                    <div>
+                        <div class="font-bold">خدمة التوصيل السريع</div>
+                        <div class="text-[11px] text-gray-400">ميت أبو غالب والمناطق المجاورة</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Container -->
+        <div id="menu-container" class="space-y-10">
+            <!-- Dynamically populated categories and menu items -->
+        </div>
+
+        <!-- Customer Information & Direct WhatsApp Order Section -->
+        <div id="checkout-section" class="mt-12 glass-card p-6 rounded-2xl border-2 border-orange-500/30 shadow-2xl relative">
+            <div class="flex items-center gap-3 mb-6 pb-3 border-b border-orange-900/40">
+                <div class="w-10 h-10 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-amber-400">بيانات التوصيل وإرسال الطلب</h3>
+                    <p class="text-xs text-gray-400">يرجى ملء البيانات التالية لإكمال الطلب عبر واتساب المطعم مباشرة</p>
+                </div>
+            </div>
+
+            <div class="grid grid-[#120d0c] grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Field 1: Name -->
+                <div class="space-y-1.5">
+                    <label for="cust-name" class="block text-xs font-bold text-gray-200">
+                        1. الإسم بالكامل <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="cust-name" placeholder="أدخل اسمك الكريم..." class="w-full bg-[#181110] text-sm text-white px-4 py-3 rounded-xl border border-orange-900/40 focus:outline-none focus:border-orange-500 transition pl-10">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Field 2: Address -->
+                <div class="space-y-1.5">
+                    <label for="cust-address" class="block text-xs font-bold text-gray-200">
+                        2. العنوان التفصيلي <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="cust-address" placeholder="المنطقة، الشارع، رقم الشقة أو علامة مميزة..." class="w-full bg-[#181110] text-sm text-white px-4 py-3 rounded-xl border border-orange-900/40 focus:outline-none focus:border-orange-500 transition pl-10">
+                        <i class="fa-solid fa-location-dot absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Field 3: Extras / Notes -->
+                <div class="md:col-span-2 space-y-1.5">
+                    <label for="cust-notes" class="block text-xs font-bold text-gray-200">
+                        3. الإضافات والملاحظات <span class="text-gray-400 font-normal">(اختياري)</span>
+                    </label>
+                    <div class="relative">
+                        <textarea id="cust-notes" rows="2" placeholder="أي إضافات خروج صوصات، زيادة كاتشب، أو ملاحظة للطيار..." class="w-full bg-[#181110] text-sm text-white px-4 py-2.5 rounded-xl border border-orange-900/40 focus:outline-none focus:border-orange-500 transition pl-10"></textarea>
+                        <i class="fa-solid fa-comment-dots absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Direct Button -->
+            <button onclick="sendWhatsAppOrder()" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black py-4 px-6 rounded-xl shadow-xl shadow-emerald-950/50 flex items-center justify-center gap-3 transition transform active:scale-95 text-base border border-emerald-400/30">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                <span>إرسال الطلب مباشرة عبر الواتساب (01154508136)</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Sticky Bottom Cart Bar for Mobile/Quick View -->
+    <div id="sticky-cart-bar" class="fixed bottom-0 left-0 right-0 bg-[#1a110f]/95 border-t border-orange-500/30 backdrop-blur-md p-3 z-40 shadow-2xl transition-transform transform translate-y-full">
+        <div class="max-w-6xl mx-auto flex items-center justify-between gap-3 px-2">
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button onclick="toggleCartModal(true)" class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-xl flex items-center justify-center text-lg font-bold shadow-lg shadow-orange-900/50">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </button>
+                    <span id="sticky-cart-badge" class="absolute -top-1 -right-1 bg-amber-400 text-black text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
+                </div>
+                <div>
+                    <div class="text-[11px] text-gray-400">إجمالي الطلب الحالي</div>
+                    <div id="sticky-cart-total" class="text-lg font-black text-amber-400">0 ج.م</div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="toggleCartModal(true)" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-gray-700 transition">
+                    عرض السلة
+                </button>
+                <button onclick="scrollToCheckout()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-lg transition flex items-center gap-1.5">
+                    <span>تأكيد الطلب</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex justify-end transition-opacity opacity-0 pointer-events-none">
+        <div id="cart-modal-content" class="w-full max-w-md bg-[#181110] h-full shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-orange-900/40 flex items-center justify-between bg-[#1f1513]">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-shopping-bag text-amber-400 text-lg"></i>
+                    <h3 class="font-black text-amber-400 text-base">سلة طلباتك</h3>
+                    <span id="modal-item-count" class="text-xs bg-orange-950 text-orange-400 border border-orange-800/40 px-2 py-0.5 rounded-full">0 عناصر</span>
+                </div>
+                <button onclick="toggleCartModal(false)" class="text-gray-400 hover:text-white p-2 text-base">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Cart Items List -->
+            <div id="cart-items-list" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <!-- Dynamically populated cart items -->
+            </div>
+
+            <!-- Modal Footer / Total & Checkout Button -->
+            <div class="p-4 border-t border-orange-900/40 bg-[#1f1513] space-y-3">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-400 font-bold">إجمالي المبلغ:</span>
+                    <span id="modal-cart-total" class="text-xl font-black text-amber-400">0 ج.م</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="toggleCartModal(false)" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold py-3 rounded-xl transition">
+                        متابعة التسوق
+                    </button>
+                    <button onclick="toggleCartModal(false); scrollToCheckout();" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-1">
+                        <span>إكمال البيانات</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Size Selection Modal -->
+    <div id="size-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity">
+        <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-orange-500/30 shadow-2xl relative bg-[#1c1412]">
+            <button onclick="closeSizeModal()" class="absolute left-4 top-4 text-gray-400 hover:text-white text-base">✕</button>
+            <div id="size-modal-item-title" class="font-black text-amber-400 text-base mb-1">اختر الحجم</div>
+            <p class="text-xs text-gray-400 mb-4">حدد الحجم أو المقاس المطلوب لهذا الصنف:</p>
+            
+            <div id="size-modal-options" class="space-y-2 mb-4">
+                <!-- Populated dynamically -->
+            </div>
+
+            <button onclick="confirmSizeSelection()" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs font-black py-3 rounded-xl shadow-lg">
+                إضافة للسلة
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-amber-500 text-black px-4 py-2 rounded-xl font-bold text-xs shadow-2xl z-50 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 border border-amber-300">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">تمت الإضافة للسلة بنجاح</span>
+    </div>
+
+    <!-- JavaScript Data Logic -->
+    <script>
+        const MENU_DATA = [
+            {
+                id: "pizza",
+                name: "البيتزا",
+                icon: "fa-pizza-slice",
+                subcategories: [
+                    {
+                        name: "بيتزا الجبن والخضار",
+                        items: [
+                            { name: "بيتزا مارجريتا", sizes: [{ label: "صغير", price: 70 }, { label: "وسط", price: 100 }, { label: "كبير", price: 140 }] },
+                            { name: "بيتزا خضار", sizes: [{ label: "صغير", price: 75 }, { label: "وسط", price: 105 }, { label: "كبير", price: 145 }] },
+                            { name: "بيتزا مشكل جبن", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 110 }, { label: "كبير", price: 150 }] }
+                        ]
+                    },
+                    {
+                        name: "بيتزا اللحوم",
+                        items: [
+                            { name: "بيتزا لحم مفروم", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا سجق", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا سوسيس", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 110 }, { label: "كبير", price: 160 }] },
+                            { name: "بيتزا ميكس لحوم", sizes: [{ label: "صغير", price: 100 }, { label: "وسط", price: 130 }, { label: "كبير", price: 180 }] }
+                        ]
+                    },
+                    {
+                        name: "بيتزا الفراخ",
+                        items: [
+                            { name: "بيتزا شيش طاووق", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا تشيكن باربيكيو", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا تشيكن رانش", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا سوبر كرانشي", sizes: [{ label: "صغير", price: 90 }, { label: "وسط", price: 125 }, { label: "كبير", price: 170 }] },
+                            { name: "بيتزا ميكس فراخ", sizes: [{ label: "صغير", price: 100 }, { label: "وسط", price: 130 }, { label: "كبير", price: 180 }] }
+                        ]
+                    },
+                    {
+                        name: "VIP Pizza",
+                        items: [
+                            { name: "بيتزا الفصول الأربعة", sizes: [{ label: "وسط", price: 130 }, { label: "كبير", price: 180 }] },
+                            { name: "بيتزا Mix Grill VIP", sizes: [{ label: "وسط", price: 130 }, { label: "كبير", price: 180 }] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "crepe",
+                name: "الكريبات",
+                icon: "fa-scroll",
+                subcategories: [
+                    {
+                        name: "كريبات فراخ",
+                        items: [
+                            { name: "كريب تشيكن بانيه", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }, { label: "سوبر", price: 80 }] },
+                            { name: "كريب تشيكن كرسبي", sizes: [{ label: "صغير", price: 55 }, { label: "وسط", price: 65 }, { label: "كبير", price: 75 }, { label: "سوبر", price: 85 }] },
+                            { name: "كريب سوبر كرانشي", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }, { label: "سوبر", price: 90 }] },
+                            { name: "كريب استرس", sizes: [{ label: "صغير", price: 70 }, { label: "وسط", price: 80 }, { label: "كبير", price: 90 }, { label: "سوبر", price: 100 }] },
+                            { name: "كريب مشكل فراخ", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] },
+                            { name: "كريب زنجر", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] },
+                            { name: "كريب شيش طاووق", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] },
+                            { name: "كريب كوردن بلو", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] },
+                            { name: "كريب فاهيتا", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] },
+                            { name: "VIP كريب", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] }
+                        ]
+                    },
+                    {
+                        name: "كريبات لحوم",
+                        items: [
+                            { name: "كريب كفته", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }, { label: "سوبر", price: 90 }] },
+                            { name: "كريب برجر", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }, { label: "سوبر", price: 90 }] },
+                            { name: "كريب هوت دوج", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }, { label: "سوبر", price: 90 }] },
+                            { name: "كريب مشكل لحوم", sizes: [{ label: "صغير", price: 70 }, { label: "وسط", price: 80 }, { label: "كبير", price: 90 }, { label: "سوبر", price: 100 }] },
+                            { name: "Mix Grill كريب", sizes: [{ label: "صغير", price: 80 }, { label: "وسط", price: 90 }, { label: "كبير", price: 100 }, { label: "سوبر", price: 110 }] }
+                        ]
+                    },
+                    {
+                        name: "كريبات الجبن",
+                        items: [
+                            { name: "كريب موتزاريلا", sizes: [{ label: "صغير", price: 40 }, { label: "وسط", price: 50 }, { label: "كبير", price: 60 }] },
+                            { name: "كريب رومي", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "كريب ميكس جبن", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "كريب جبن وبطاطس", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }] },
+                            { name: "كريب جبن وسوسيس", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }] },
+                            { name: "كريب جبن واسترس", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }] }
+                        ]
+                    },
+                    {
+                        name: "كريبات خفيفة",
+                        items: [
+                            { name: "كريب بطاطس", sizes: [{ label: "صغير", price: 40 }, { label: "وسط", price: 50 }, { label: "كبير", price: 60 }] },
+                            { name: "كريب بطاطس + بانيه", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "كريب بطاطس + استرس", sizes: [{ label: "صغير", price: 60 }, { label: "وسط", price: 70 }, { label: "كبير", price: 80 }] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "syrian",
+                name: "سوري",
+                icon: "fa-utensils",
+                subcategories: [
+                    {
+                        name: "مناقيش",
+                        items: [
+                            { name: "منقوشة سنفورة", price: 30 },
+                            { name: "منقوشة رومي", price: 35 },
+                            { name: "منقوشة موتزاريلا وخضار", price: 40 },
+                            { name: "منقوشة ببروني", price: 40 },
+                            { name: "منقوشة ميكس جبن", price: 50 },
+                            { name: "منقوشة كرانشي", price: 60 },
+                            { name: "منقوشة بسطرمة", price: 60 },
+                            { name: "منقوشة لحم مفروم", price: 60 },
+                            { name: "منقوشة ميكس فراخ", price: 70 },
+                            { name: "منقوشة ميكس لحوم", price: 70 }
+                        ]
+                    },
+                    {
+                        name: "سندوتشات سوري",
+                        items: [
+                            { name: "سندوتش بطاطس سوري", sizes: [{ label: "صغير", price: 25 }, { label: "وسط", price: 30 }, { label: "كبير", price: 40 }] },
+                            { name: "سندوتش بانيه سوري", sizes: [{ label: "صغير", price: 30 }, { label: "وسط", price: 40 }, { label: "كبير", price: 50 }] },
+                            { name: "سندوتش كرسبي سوري", sizes: [{ label: "صغير", price: 30 }, { label: "وسط", price: 40 }, { label: "كبير", price: 50 }] },
+                            { name: "سندوتش استرس سوري", sizes: [{ label: "صغير", price: 40 }, { label: "وسط", price: 50 }, { label: "كبير", price: 60 }] },
+                            { name: "سندوتش سوبر كرانشي سوري", sizes: [{ label: "صغير", price: 45 }, { label: "وسط", price: 55 }, { label: "كبير", price: 65 }] },
+                            { name: "سندوتش شيش طاووق سوري", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "سندوتش ميكس فراخ سوري", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "سندوتش كفته سوري", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "سندوتش برجر سوري", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "سندوتش هوت دوج سوري", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] },
+                            { name: "سندوتش بطاطس + موتزاريلا", sizes: [{ label: "صغير", price: 35 }, { label: "وسط", price: 45 }, { label: "كبير", price: 55 }] },
+                            { name: "سندوتش بطاطس + بانيه", sizes: [{ label: "صغير", price: 40 }, { label: "وسط", price: 50 }, { label: "كبير", price: 60 }] },
+                            { name: "سندوتش بطاطس + استرس", sizes: [{ label: "صغير", price: 50 }, { label: "وسط", price: 60 }, { label: "كبير", price: 70 }] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "burger",
+                name: "البرجر",
+                icon: "fa-hamburger",
+                subcategories: [
+                    {
+                        name: "برجر عالي الجودة",
+                        items: [
+                            { name: "برجر كلاسيك", sizes: [{ label: "سنجل", price: 60 }, { label: "دبل", price: 70 }] },
+                            { name: "برجر فراخ", sizes: [{ label: "سنجل", price: 60 }, { label: "دبل", price: 70 }] },
+                            { name: "برجر لحوم", sizes: [{ label: "سنجل", price: 70 }, { label: "دبل", price: 80 }] },
+                            { name: "Mix برجر", sizes: [{ label: "سنجل", price: 80 }, { label: "دبل", price: 90 }] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "grill",
+                name: "المشويات والوجبات",
+                icon: "fa-drumstick-bite",
+                note: "تُقدَّم مع المشويات: (أرز أو عيش + سلطة + مخلل + طحينة + بطاطس)",
+                subcategories: [
+                    {
+                        name: "مشويات الفحم",
+                        items: [
+                            { name: "فرخة على الفحم", price: 270, desc: "فرخة كاملة مشوية على الفحم + طحينة + سلطة + مخلل + أرز أو عيش + بطاطس" },
+                            { name: "نصف فرخة على الفحم", price: 140, desc: "نصف فرخة مشوية على الفحم + طحينة + سلطة + مخلل + أرز أو عيش + بطاطس" },
+                            { name: "ربع فرخة ورك", price: 80, desc: "ربع فرخة ورك + طحينة + سلطة + مخلل + أرز أو عيش + بطاطس" },
+                            { name: "ربع فرخة صدر", price: 90, desc: "ربع فرخة صدر + طحينة + سلطة + مخلل + أرز أو عيش + بطاطس" }
+                        ]
+                    },
+                    {
+                        name: "وجبات المشويات",
+                        items: [
+                            { name: "وجبة ميكس جريل المشكلة", price: 150, desc: "ربع فرخة + سيخ كفتة + قطعة شيش + أرز + طحينة + سلطة + مخلل + بطاطس" }
+                        ]
+                    },
+                    {
+                        name: "التسويات",
+                        items: [
+                            { name: "تسوية فرخة", price: 60, desc: "خدمة تسوية فرخة على الفحم" },
+                            { name: "تسوية كيلو لحمة", price: 60, desc: "خدمة تسوية كيلو لحمة على الفحم" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "pasta",
+                name: "المكرونات",
+                icon: "fa-bowl-rice",
+                subcategories: [
+                    {
+                        name: "أطباق المكرونة",
+                        items: [
+                            { name: "مكرونة بشاميل لحمة", sizes: [{ label: "وسط", price: 70 }, { label: "كبير", price: 100 }] },
+                            { name: "مكرونة بشاميل فراخ", sizes: [{ label: "وسط", price: 70 }, { label: "كبير", price: 100 }] },
+                            { name: "مكرونة نجرسكو", sizes: [{ label: "وسط", price: 70 }, { label: "كبير", price: 100 }] },
+                            { name: "مكرونة سجق", sizes: [{ label: "وسط", price: 70 }, { label: "كبير", price: 100 }] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "rizo",
+                name: "الريزو",
+                icon: "fa-fire",
+                subcategories: [
+                    {
+                        name: "أطباق الريزو المميزة",
+                        items: [
+                            { name: "ريزو استرس", price: 60 },
+                            { name: "ريزو كفتة", price: 60 },
+                            { name: "ريزو شيش", price: 60 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "sides",
+                name: "الإضافات والصوصات",
+                icon: "fa-cheese",
+                subcategories: [
+                    {
+                        name: "البطاطس",
+                        items: [
+                            { name: "باكيت بطاطس", sizes: [{ label: "صغير", price: 20 }, { label: "كبير", price: 30 }] },
+                            { name: "بطاطس جبنة", sizes: [{ label: "صغير", price: 25 }, { label: "كبير", price: 35 }] },
+                            { name: "بطاطس شيدر", sizes: [{ label: "صغير", price: 30 }, { label: "كبير", price: 40 }] },
+                            { name: "بطاطس تكساس", sizes: [{ label: "صغير", price: 30 }, { label: "كبير", price: 40 }] }
+                        ]
+                    },
+                    {
+                        name: "الصوصات والسلطات",
+                        items: [
+                            { name: "صوص شيدر", price: 20 },
+                            { name: "صوص باربيكيو", price: 15 },
+                            { name: "ثومية", price: 10 },
+                            { name: "كولسلو (كولو)", price: 10 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let cart = [];
+        let activeCategory = 'all';
+        let pendingItemForSize = null;
+        let selectedSizeIndex = 0;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategoryTabs();
+            renderMenu();
+            updateCartUI();
+        });
+
+        // Render Top Navigation Category Pills
+        function renderCategoryTabs() {
+            const container = document.getElementById('categories-container');
+            let html = `
+                <button onclick="selectCategory('all')" id="cat-tab-all" class="cat-pill whitespace-nowrap text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 bg-orange-600 text-white shadow-md">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>الكل</span>
+                </button>
+            `;
+
+            MENU_DATA.forEach(cat => {
+                html += `
+                    <button onclick="selectCategory('${cat.id}')" id="cat-tab-${cat.id}" class="cat-pill whitespace-nowrap text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 bg-[#221917] text-gray-300 hover:bg-orange-950/60 border border-orange-900/30">
+                        <i class="fa-solid ${cat.icon} text-orange-400"></i>
+                        <span>${cat.name}</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function selectCategory(catId) {
+            activeCategory = catId;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.classList.remove('bg-orange-600', 'text-white', 'shadow-md');
+                btn.classList.add('bg-[#221917]', 'text-gray-300');
+            });
+
+            const activeBtn = document.getElementById(`cat-tab-${catId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-[#221917]', 'text-gray-300');
+                activeBtn.classList.add('bg-orange-600', 'text-white', 'shadow-md');
+            }
+
+            renderMenu();
+        }
+
+        // Render Menu Section
+        function renderMenu(searchTerm = '') {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = '';
+
+            let hasResults = false;
+
+            MENU_DATA.forEach(cat => {
+                if (activeCategory !== 'all' && activeCategory !== cat.id) return;
+
+                let categoryItemsCount = 0;
+                let subcatsHtml = '';
+
+                cat.subcategories.forEach(sub => {
+                    const filteredItems = sub.items.filter(item => {
+                        if (!searchTerm) return true;
+                        return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+                    });
+
+                    if (filteredItems.length === 0) return;
+                    categoryItemsCount += filteredItems.length;
+
+                    let itemsGridHtml = '';
+                    filteredItems.forEach(item => {
+                        let priceDisplay = '';
+                        let sizeButtonsHtml = '';
+
+                        if (item.sizes && item.sizes.length > 0) {
+                            const minPrice = item.sizes[0].price;
+                            const maxPrice = item.sizes[item.sizes.length - 1].price;
+                            priceDisplay = minPrice === maxPrice ? `${minPrice} ج.م` : `${minPrice} - ${maxPrice} ج.م`;
+
+                            sizeButtonsHtml = `
+                                <div class="flex flex-wrap gap-1 mt-2">
+                                    ${item.sizes.map((s, idx) => `
+                                        <button onclick="quickAddWithSize('${escapeQuotes(item.name)}', ${idx}, '${cat.id}')" class="text-[11px] bg-orange-950/60 hover:bg-orange-600 border border-orange-800/50 hover:border-orange-500 text-orange-200 hover:text-white px-2 py-1 rounded-lg transition font-bold">
+                                            ${s.label}:${s.price}ج
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            `;
+                        } else {
+                            priceDisplay = `${item.price} ج.م`;
+                        }
+
+                        itemsGridHtml += `
+                            <div class="glass-card p-4 rounded-2xl border border-orange-900/30 flex flex-col justify-between hover:border-orange-500/50 transition duration-200 shadow-lg">
+                                <div>
+                                    <div class="flex items-start justify-between gap-2">
+                                        <h4 class="font-black text-amber-300 text-sm md:text-base leading-snug">${item.name}</h4>
+                                        <span class="text-xs font-black text-amber-400 bg-amber-950/80 border border-amber-700/50 px-2 py-1 rounded-lg whitespace-nowrap">
+                                            ${priceDisplay}
+                                        </span>
+                                    </div>
+                                    ${item.desc ? `<p class="text-[11px] text-gray-400 mt-1.5 leading-relaxed">${item.desc}</p>` : ''}
+                                    ${sizeButtonsHtml}
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-orange-900/30 flex items-center justify-between">
+                                    <span class="text-[10px] text-gray-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-fire text-orange-500"></i>
+                                        <span>طازج ومحضر فوراً</span>
+                                    </span>
+                                    <button onclick="promptAddItem('${escapeQuotes(item.name)}', '${cat.id}')" class="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span>إضافة</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    subcatsHtml += `
+                        <div class="mb-6">
+                            <h4 class="text-xs font-bold text-orange-400/90 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                                <span>${sub.name}</span>
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${itemsGridHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (categoryItemsCount > 0) {
+                    hasResults = true;
+                    const catSection = document.createElement('section');
+                    catSection.className = 'space-y-4';
+                    catSection.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-orange-900/40 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid ${cat.icon}"></i>
+                                </div>
+                                <h3 class="text-lg font-black text-amber-400">${cat.name}</h3>
+                            </div>
+                        </div>
+                        ${cat.note ? `
+                            <div class="bg-amber-950/40 border border-amber-800/40 p-3 rounded-xl text-xs text-amber-300/90 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-amber-400"></i>
+                                <span>${cat.note}</span>
+                            </div>
+                        ` : ''}
+                        ${subcatsHtml}
+                    `;
+                    container.appendChild(catSection);
+                }
+            });
+
+            if (!hasResults) {
+                container.innerHTML = `
+                    <div class="text-center py-16 glass-card rounded-2xl">
+                        <i class="fa-solid fa-utensils text-4xl text-gray-600 mb-3"></i>
+                        <h3 class="font-bold text-gray-300 text-base">لا توجد نتائج مطابقة لبحثك</h3>
+                        <p class="text-xs text-gray-500 mt-1">جرب البحث بكلمة أخرى أو تصفح الأقسام</p>
+                    </div>
+                `;
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (query) {
+                clearBtn.classList.remove('hidden');
+                clearBtn.classList.add('flex');
+            } else {
+                clearBtn.classList.add('hidden');
+                clearBtn.classList.remove('flex');
+            }
+            renderMenu(query);
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            renderMenu();
+        }
+
+        function promptAddItem(itemName, catId) {
+            let itemObj = null;
+            MENU_DATA.forEach(c => {
+                c.subcategories.forEach(s => {
+                    s.items.forEach(i => {
+                        if (i.name === itemName) itemObj = i;
+                    });
+                });
+            });
+
+            if (!itemObj) return;
+
+            if (itemObj.sizes && itemObj.sizes.length > 0) {
+                pendingItemForSize = itemObj;
+                openSizeModal(itemObj);
+            } else {
+                addToCart(itemObj.name, null, itemObj.price);
+            }
+        }
+
+        function quickAddWithSize(itemName, sizeIdx, catId) {
+            let itemObj = null;
+            MENU_DATA.forEach(c => {
+                c.subcategories.forEach(s => {
+                    s.items.forEach(i => {
+                        if (i.name === itemName) itemObj = i;
+                    });
+                });
+            });
+
+            if (itemObj && itemObj.sizes && itemObj.sizes[sizeIdx]) {
+                const s = itemObj.sizes[sizeIdx];
+                addToCart(itemObj.name, s.label, s.price);
+            }
+        }
+
+        function openSizeModal(itemObj) {
+            const modal = document.getElementById('size-modal');
+            const optionsContainer = document.getElementById('size-modal-options');
+            document.getElementById('size-modal-item-title').innerText = itemObj.name;
+
+            selectedSizeIndex = 0;
+            optionsContainer.innerHTML = itemObj.sizes.map((s, idx) => `
+                <label class="flex items-center justify-between p-3 rounded-xl border border-orange-900/40 bg-[#150e0d] cursor-pointer hover:border-orange-500 transition">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="size-opt" value="${idx}" ${idx === 0 ? 'checked' : ''} onchange="selectedSizeIndex = ${idx}" class="accent-orange-500">
+                        <span class="text-xs font-bold text-gray-200">${s.label}</span>
+                    </div>
+                    <span class="text-xs font-black text-amber-400">${s.price} ج.م</span>
+                </label>
+            `).join('');
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeSizeModal() {
+            const modal = document.getElementById('size-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            pendingItemForSize = null;
+        }
+
+        function confirmSizeSelection() {
+            if (pendingItemForSize && pendingItemForSize.sizes[selectedSizeIndex]) {
+                const s = pendingItemForSize.sizes[selectedSizeIndex];
+                addToCart(pendingItemForSize.name, s.label, s.price);
+                closeSizeModal();
+            }
+        }
+
+        function addToCart(name, size, price) {
+            const cartKey = `${name}_${size || 'std'}`;
+            const existingIdx = cart.findIndex(i => i.key === cartKey);
+
+            if (existingIdx > -1) {
+                cart[existingIdx].qty += 1;
+            } else {
+                cart.push({
+                    key: cartKey,
+                    name: name,
+                    size: size,
+                    price: price,
+                    qty: 1
+                });
+            }
+
+            updateCartUI();
+            showToast(`تمت إضافة "${name}${size ? ' (' + size + ')' : ''}" للسلة`);
+        }
+
+        function updateCartQty(key, delta) {
+            const idx = cart.findIndex(i => i.key === key);
+            if (idx > -1) {
+                cart[idx].qty += delta;
+                if (cart[idx].qty <= 0) {
+                    cart.splice(idx, 1);
+                }
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(key) {
+            cart = cart.filter(i => i.key !== key);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            // Update Badges & Counters
+            document.getElementById('header-cart-count').innerText = totalCount;
+            document.getElementById('sticky-cart-badge').innerText = totalCount;
+            document.getElementById('modal-item-count').innerText = `${totalCount} عناصر`;
+            
+            document.getElementById('sticky-cart-total').innerText = `${totalPrice} ج.م`;
+            document.getElementById('modal-cart-total').innerText = `${totalPrice} ج.م`;
+
+            // Toggle Sticky Cart Bar
+            const stickyBar = document.getElementById('sticky-cart-bar');
+            if (totalCount > 0) {
+                stickyBar.classList.remove('translate-y-full');
+            } else {
+                stickyBar.classList.add('translate-y-full');
+            }
+
+            // Populate Cart Modal List
+            const listContainer = document.getElementById('cart-items-list');
+            if (cart.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-basket-shopping text-4xl text-gray-700 mb-3"></i>
+                        <p class="text-xs text-gray-400 font-bold">السلة فارغة حالياً</p>
+                        <p class="text-[11px] text-gray-500 mt-1">اختر وجباتك من القائمة لإكمال الطلب</p>
+                    </div>
+                `;
+            } else {
+                listContainer.innerHTML = cart.map(item => `
+                    <div class="glass-card p-3 rounded-xl border border-orange-900/30 flex items-center justify-between gap-3 bg-[#1e1513]">
+                        <div class="flex-1">
+                            <h5 class="text-xs font-black text-amber-300">${item.name}</h5>
+                            <div class="text-[11px] text-gray-400 mt-0.5 flex items-center gap-2">
+                                ${item.size ? `<span class="bg-orange-950 text-orange-400 px-1.5 py-0.2 rounded text-[10px] border border-orange-800/40">${item.size}</span>` : ''}
+                                <span>${item.price} ج.م</span>
+                            </div>
+                        </div>
+
+                        <!-- Quantity Control -->
+                        <div class="flex items-center gap-1.5 bg-[#120d0c] px-2 py-1 rounded-lg border border-orange-900/40">
+                            <button onclick="updateCartQty('${item.key}', -1)" class="w-5 h-5 bg-gray-800 hover:bg-orange-600 text-white rounded text-xs font-bold flex items-center justify-center">
+                                -
+                            </button>
+                            <span class="text-xs font-black text-amber-400 px-1">${item.qty}</span>
+                            <button onclick="updateCartQty('${item.key}', 1)" class="w-5 h-5 bg-gray-800 hover:bg-orange-600 text-white rounded text-xs font-bold flex items-center justify-center">
+                                +
+                            </button>
+                        </div>
+
+                        <!-- Item Total & Delete -->
+                        <div class="text-left">
+                            <div class="text-xs font-black text-amber-400">${item.price * item.qty} ج.م</div>
+                            <button onclick="removeFromCart('${item.key}')" class="text-red-400 hover:text-red-300 text-[10px] mt-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCartModal(show) {
+            const modal = document.getElementById('cart-modal');
+            const content = document.getElementById('cart-modal-content');
+
+            if (show) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.remove('translate-x-full');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.add('translate-x-full');
+            }
+        }
+
+        function scrollToCheckout() {
+            const checkoutSec = document.getElementById('checkout-section');
+            if (checkoutSec) {
+                checkoutSec.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('cust-name').focus();
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // Send WhatsApp Direct Order
+        function sendWhatsAppOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const notes = document.getElementById('cust-notes').value.trim();
+
+            if (cart.length === 0) {
+                alert('سلة طلباتك فارغة! يرجى اختيار بعض الأصناف من المنيو أولاً.');
+                return;
+            }
+
+            if (!name) {
+                alert('يرجى ملء الخانة الأولى: (الإسم بالكامل)');
+                document.getElementById('cust-name').focus();
+                return;
+            }
+
+            if (!address) {
+                alert('يرجى ملء الخانة الثانية: (العنوان التفصيلي)');
+                document.getElementById('cust-address').focus();
+                return;
+            }
+
+            // Construct formatted WhatsApp text message
+            let text = `🔥 *طلب جديد من تطبيق مطعم ميكس جريل (Mix Grill)* 🔥\n\n`;
+            text += `👤 *اسم العميل:* ${name}\n`;
+            text += `📍 *العنوان:* ${address}\n`;
+            if (notes) {
+                text += `📝 *ملاحظات وإضافات:* ${notes}\n`;
+            }
+            text += `\n🛒 *تفاصيل الفاتورة والطلبات:*\n`;
+            text += `-----------------------------------\n`;
+
+            let totalPrice = 0;
+            cart.forEach((item, index) => {
+                const subtotal = item.price * item.qty;
+                totalPrice += subtotal;
+                const sizeStr = item.size ? ` (${item.size})` : '';
+                text += `${index + 1}. ${item.name}${sizeStr} x${item.qty} = ${subtotal} ج.م\n`;
+            });
+
+            text += `-----------------------------------\n`;
+            text += `💰 *إجمالي الفاتورة المطلوبة:* ${totalPrice} ج.م\n\n`;
+            text += `شكراً لطلبك من *مطعم ميكس جريل*! 🍖🚀`;
+
+            // Official Restaurant WhatsApp Number
+            const phone = '201154508136';
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+            // Open WhatsApp in new tab/app
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'");
+        }
+    </script>
+</body>
+</html>
